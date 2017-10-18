@@ -1,7 +1,6 @@
 #pragma warning disable 1591
 
 using System;
-using System.Dynamic;
 using System.Runtime.InteropServices;
 using ProtoBuf;
 namespace Fusee.Math.Core
