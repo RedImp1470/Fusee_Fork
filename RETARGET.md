@@ -11,9 +11,13 @@
 
 #### src/Serialization/Fusee.Serialization.csproj
 
-* Target : netstandard 1.3
+* Target: netstandard 1.3
 * Note: Precompiler is not working yet. Everything depending on it will be using /ext/Fusee.SerializationSerializer.dll until fixed.
 
+#### src/Xene/Fusee.Xene.csproj
+
+* Target: netstandard 2.0
+* Note: Needs to be netstandard 2.0 for the [JSExternal] attribute.
 
 ## ToDo
 
@@ -56,7 +60,7 @@
 #### src/Tools/fuGen/fuGen.csproj
 #### src/Tools/fuHttp/fuHttp.csproj
 #### src/Tools/fuseeCmdLine/fuseeCmdLine.csproj
-#### src/Xene/Fusee.Xene.csproj
+
 #### src/Xirkit/Fusee.Xirkit.csproj
 
 ## Skipping (until all engine code is done)
