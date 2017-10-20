@@ -1,6 +1,5 @@
 ﻿
 using System;
-using System.ServiceModel;
 using Fusee.Math.Core;
 
 namespace Fusee.Base.Common

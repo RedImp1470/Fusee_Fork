@@ -1,5 +1,10 @@
 ## Done
 
+#### src/Base/Common/Fusee.Base.Common.csproj
+
+* Target: netstandard 2.0
+* Note: Needs to be netstandard 2.0 for the current usage of the string.Compare() method.
+
 #### src/Math/Conversion/Fusee.Math.Conversion.csproj
 
 * Target: netstandard 1.3
