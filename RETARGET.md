@@ -19,6 +19,11 @@
 * Target: netstandard 2.0
 * Note: Needs to be netstandard 2.0 for the [JSExternal] attribute.
 
+#### src/Xirkit/Fusee.Xirkit.csproj
+
+* Target: netstandard 2.0
+* Note: Needs to be netstandard 2.0 for the [JSExternal] attribute.
+
 ## ToDo
 
 #### dis/DnTemplate/Fusee_App.csproj
@@ -60,8 +65,6 @@
 #### src/Tools/fuGen/fuGen.csproj
 #### src/Tools/fuHttp/fuHttp.csproj
 #### src/Tools/fuseeCmdLine/fuseeCmdLine.csproj
-
-#### src/Xirkit/Fusee.Xirkit.csproj
 
 ## Skipping (until all engine code is done)
 
