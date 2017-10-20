@@ -8,7 +8,12 @@
 #### src/Base/Core/Fusee.Base.Core.csproj
 
 * Target: netstandard 2.0
-* Note: netstandard 2.0 sice it depends on Fusee.Base.Common.
+* Note: netstandard 2.0 since it depends on Fusee.Base.Common.
+
+#### src/Jometri/Fusee.Jometri.csproj
+
+* Target: netstandard 2.0
+* Note: netstandard 2.0 since it depends on Fusee.Base.Common.
 
 #### src/Math/Conversion/Fusee.Math.Conversion.csproj
 
@@ -67,7 +72,6 @@
 #### src/Engine/SceneViewer/Desktop/Fusee.Engine.SceneViewer.Desktop.csproj
 #### src/Engine/SceneViewer/Web/Fusee.Engine.SceneViewer.Web.csproj
 #### src/Engine/Tests/Tests.csproj
-#### src/Jometri/Fusee.Jometri.csproj
 #### src/Misc/SwigTests/CSProgram/CSProgram.csproj
 #### src/Tools/fuConv/fuConv.csproj
 #### src/Tools/fuGen/fuGen.csproj
