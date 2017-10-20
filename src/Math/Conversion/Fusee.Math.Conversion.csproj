@@ -12,7 +12,7 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <OutputPath>..\..\..\bin\Debug\Libraries\</OutputPath>
+    <OutputPath>..\..\..\bin\Release\Libraries\</OutputPath>
 	<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
 
