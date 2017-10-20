@@ -9,6 +9,11 @@
 
 * Target: netstandard 1.3
 
+#### src/Serialization/Fusee.Serialization.csproj
+
+* Target : netstandard 1.3
+* Note: Precompiler is not working yet. Everything depending on it will be using /ext/Fusee.SerializationSerializer.dll until fixed.
+
 
 ## ToDo
 
@@ -47,7 +52,6 @@
 #### src/Engine/Tests/Tests.csproj
 #### src/Jometri/Fusee.Jometri.csproj
 #### src/Misc/SwigTests/CSProgram/CSProgram.csproj
-#### src/Serialization/Fusee.Serialization.csproj
 #### src/Tools/fuConv/fuConv.csproj
 #### src/Tools/fuGen/fuGen.csproj
 #### src/Tools/fuHttp/fuHttp.csproj
