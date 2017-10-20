@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Fusee.Base.Common;
+using FileMode = Fusee.Base.Common.FileMode;
 
 namespace Fusee.Base.Core
 {

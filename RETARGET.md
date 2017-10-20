@@ -5,6 +5,11 @@
 * Target: netstandard 2.0
 * Note: Needs to be netstandard 2.0 for the current usage of the string.Compare() method.
 
+#### src/Base/Core/Fusee.Base.Core.csproj
+
+* Target: netstandard 2.0
+* Note: netstandard 2.0 sice it depends on Fusee.Base.Common.
+
 #### src/Math/Conversion/Fusee.Math.Conversion.csproj
 
 * Target: netstandard 1.3
@@ -32,8 +37,6 @@
 ## ToDo
 
 #### dis/DnTemplate/Fusee_App.csproj
-#### src/Base/Common/Fusee.Base.Common.csproj
-#### src/Base/Core/Fusee.Base.Core.csproj
 #### src/Base/Imp/Android/Fusee.Base.Imp.Android.csproj
 #### src/Base/Imp/Desktop/Fusee.Base.Imp.Desktop.csproj
 #### src/Base/Imp/Web/Fusee.Base.Imp.Web.csproj
