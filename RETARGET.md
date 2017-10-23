@@ -15,6 +15,12 @@
 * Target: net462
 * Note: Needs all that stuff that isn't in standard or core.
 
+#### src/Engine/Common/Fusee.Engine.Common.csproj
+
+* Target: netstandard 2.0
+* Note: netstandard 2.0 since it depends on Fusee.Base.Common.
+* Deletions: Orphan files IGameController.cs and IInputDevice.cs
+
 #### src/Jometri/Fusee.Jometri.csproj
 
 * Target: netstandard 2.0
@@ -50,7 +56,6 @@
 #### src/Base/Imp/Android/Fusee.Base.Imp.Android.csproj
 #### src/Base/Imp/Web/Fusee.Base.Imp.Web.csproj
 #### src/Base/Imp/Web/Fusee.Base.Imp.Web.Protable.erroneous.csproj
-#### src/Engine/Common/Fusee.Engine.Common.csproj
 #### src/Engine/Core/Fusee.Engine.Core.csproj
 #### src/Engine/Imp/Font/Desktop/Fusee.Engine.Imp.Font.Desktop.csproj
 #### src/Engine/Imp/Graphics/Android/Fusee.Engine.Imp.Graphics.Android.csproj
