@@ -1,6 +1,8 @@
 ﻿#define GUI_SIMPLE
 
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using Fusee.Base.Common;
 using Fusee.Base.Core;
@@ -42,11 +44,18 @@ namespace Fusee.Engine.Examples.Simple.Core
         private float _subtextWidth;
 
         private string _text;
-        #endif
+
+        private string fileString;
+        private Dictionary<string, string> parsedFile;
+
+#endif
 
         // Init is called on startup. 
         public override void Init()
         {
+
+            fileString = AssetStorage.Get<string>("iris5_x_20150407_front_left.ini");
+            parsedFile = CreateProjection.Read(fileString);
 #if GUI_SIMPLE
             _guiHandler = new GUIHandler();
             _guiHandler.AttachToContext(RC);
@@ -79,7 +88,7 @@ namespace Fusee.Engine.Examples.Simple.Core
             RC.ClearColor = new float4(1, 1, 1, 1);
 
             // Load the rocket model
-            _rocketScene = AssetStorage.Get<SceneContainer>("RocketModel.fus");
+            _rocketScene = CreateProjection.CreateScene(RC);
 
             // Wrap a SceneRenderer around the model.
             _sceneRenderer = new SceneRenderer(_rocketScene);
@@ -126,14 +135,11 @@ namespace Fusee.Engine.Examples.Simple.Core
                 }
             }
 
-
             _angleHorz += _angleVelHorz;
             _angleVert += _angleVelVert;
 
             // Create the camera matrix and set it as the current ModelView transformation
-            var mtxRot = float4x4.CreateRotationX(_angleVert) * float4x4.CreateRotationY(_angleHorz);
-            var mtxCam = float4x4.LookAt(0, 20, -600, 0, 150, 0, 0, 1, 0);
-            RC.ModelView = mtxCam * mtxRot;
+            RC.ModelView = CreateProjection.CreateViewMat(parsedFile);
 
             // Render the scene loaded in Init()
             _sceneRenderer.Render(RC);
@@ -164,9 +170,16 @@ namespace Fusee.Engine.Examples.Simple.Core
             // Front clipping happens at 1 (Objects nearer than 1 world unit get clipped)
             // Back clipping happens at 2000 (Anything further away from the camera than 2000 world units gets clipped, polygons will be cut)
             var projection = float4x4.CreatePerspectiveFieldOfView(M.PiOver4, aspectRatio, 1, 20000);
-            RC.Projection = projection;
+            //RC.Projection = projection;
+            Debug.WriteLine("Orig Proj");
+            Debug.WriteLine(projection);
 
-            #if GUI_SIMPLE
+            RC.Projection = CreateProjection.CreateProjectionMat(parsedFile,1,20000);
+
+            float t = RC.Projection.M22;
+            var fov = M.RadiansToDegrees((float)(System.Math.Atan(1.0f / t) * 2.0f));
+
+#if GUI_SIMPLE
             _guiSubText.PosX = (int)((Width - _subtextWidth) / 2);
             _guiSubText.PosY = (int)(Height - _subtextHeight - 3);
 

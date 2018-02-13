@@ -42,7 +42,20 @@ namespace Fusee.Engine.Examples.Simple.Desktop
                     },
                     Checker = id => Path.GetExtension(id).ToLower().Contains("fus")
                 });
-
+            //fap.RegisterTypeHandler(
+            //    new AssetHandler
+            //    {
+            //        ReturnedType = typeof(string),
+            //        Decoder = delegate (string id, object storage)
+            //        {
+            //            if (!Path.GetExtension(id).ToLower().Contains("ini")) return null;
+            //            TextReader tr = File.OpenText((string)storage);
+            //            string result = tr.ReadToEnd();
+            //            return result;
+            //        },
+            //        Checker = id => Path.GetExtension(id).ToLower().Contains("ini")
+            //    });
+            
             AssetStorage.RegisterProvider(fap);
 
             var app = new Core.Simple();
