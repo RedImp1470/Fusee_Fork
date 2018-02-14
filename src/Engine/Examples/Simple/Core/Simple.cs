@@ -3,7 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
+using System.Globalization;
 using Fusee.Base.Common;
 using Fusee.Base.Core;
 using Fusee.Engine.Common;
@@ -88,7 +88,7 @@ namespace Fusee.Engine.Examples.Simple.Core
             RC.ClearColor = new float4(1, 1, 1, 1);
 
             // Load the rocket model
-            _rocketScene = CreateProjection.CreateScene(RC);
+            _rocketScene = CreateScene(RC);
 
             // Wrap a SceneRenderer around the model.
             _sceneRenderer = new SceneRenderer(_rocketScene);
@@ -139,7 +139,8 @@ namespace Fusee.Engine.Examples.Simple.Core
             _angleVert += _angleVelVert;
 
             // Create the camera matrix and set it as the current ModelView transformation
-            RC.ModelView = CreateProjection.CreateViewMat(parsedFile);
+            RC.ModelView = float4x4.Identity;
+            //RC.ModelView = CreateProjection.CreateViewMat(parsedFile);
 
             // Render the scene loaded in Init()
             _sceneRenderer.Render(RC);
@@ -160,11 +161,14 @@ namespace Fusee.Engine.Examples.Simple.Core
         // Is called when the window was resized
         public override void Resize()
         {
+            var width = int.Parse(parsedFile["SENSOR_WIDTH_PIX"], CultureInfo.InvariantCulture);
+            var height = int.Parse(parsedFile["SENSOR_HEIGHT_PIX"], CultureInfo.InvariantCulture);
+            SetWindowSize(width/2, height/2,0,0);
             // Set the new rendering area to the entire new windows size
-            RC.Viewport(0, 0, Width, Height);
+            RC.Viewport(0, 0, width/2, height/2);
 
             // Create a new projection matrix generating undistorted images on the new aspect ratio.
-            var aspectRatio = Width/(float) Height;
+            var aspectRatio = width / height; 
 
             // 0.25*PI Rad -> 45° Opening angle along the vertical direction. Horizontal opening angle is calculated based on the aspect ratio
             // Front clipping happens at 1 (Objects nearer than 1 world unit get clipped)
@@ -176,8 +180,7 @@ namespace Fusee.Engine.Examples.Simple.Core
 
             RC.Projection = CreateProjection.CreateProjectionMat(parsedFile,1,20000);
 
-            float t = RC.Projection.M22;
-            var fov = M.RadiansToDegrees((float)(System.Math.Atan(1.0f / t) * 2.0f));
+            
 
 #if GUI_SIMPLE
             _guiSubText.PosX = (int)((Width - _subtextWidth) / 2);
@@ -188,7 +191,101 @@ namespace Fusee.Engine.Examples.Simple.Core
 
         }
 
-        #if GUI_SIMPLE
+        public static SceneContainer CreateScene(RenderContext rc)
+        {
+            return new SceneContainer
+            {
+                Children = new List<SceneNodeContainer>
+                {
+                    new SceneNodeContainer
+                    {
+                        Name = "RootNull_Transform",
+                        Components = new List<SceneComponentContainer>
+                        {
+                            new TransformComponent
+                            {
+                                Scale = new float3(1,1,1),
+                                Translation = new float3(0,0,10)
+                            }
+                        },
+                        Children = new List<SceneNodeContainer>
+                        {
+
+                            new SceneNodeContainer
+                            {
+                                Name = "Cube",
+                                Components = new List<SceneComponentContainer>
+                                {
+                                    new TransformComponent
+                                    {
+                                        Scale = new float3(1,1,1),
+                                        Translation = new float3(0,0,0),
+                                        Rotation = new float3(20,20,0)
+
+                                    },
+
+                                    new MaterialComponent
+                                    {
+                                        Diffuse = new MatChannelContainer
+                                        {
+                                            Color = new float3(1,0.9f,0.4f),
+                                            Texture = "grid.jpg",
+                                            Mix = 0.1f
+                                        },
+                                        Specular =  new SpecularChannelContainer
+                                        {
+                                            Color = new float3(1,1,1),
+                                            Intensity = 0.5f,
+                                            Shininess = 100f
+                                        }
+                                    },
+
+                                    Cube.CreateCube()
+
+                                },
+                                Children = new List<SceneNodeContainer>()
+                                {
+                                    new SceneNodeContainer
+                                    {
+                                        Name = "Sphere",
+                                        Components = new List<SceneComponentContainer>
+                                        {
+                                            new TransformComponent
+                                            {
+                                                Scale = new float3(0.5f,0.5f,0.5f),
+                                                Translation = new float3(1,0,2)
+                                            },
+
+                                            new MaterialComponent
+                                            {
+                                                Diffuse = new MatChannelContainer
+                                                {
+                                                    Color = new float3(0.1f,0.8f,0.4f),
+                                                    Texture = "grid.jpg",
+                                                    Mix = 0.1f
+
+                                                },
+                                                Specular =  new SpecularChannelContainer
+                                                {
+                                                    Color = new float3(1,1,1),
+                                                    Intensity = 0.5f,
+                                                    Shininess = 100f
+                                                }
+                                            },
+                                            Icosphere.CreateIcosphere(6)
+
+                                        }
+                                    },
+                                }
+                            }
+                        }
+
+                    }
+                }
+            };
+        }
+
+#if GUI_SIMPLE
         private void _guiFuseeLink_OnGUIButtonLeave(GUIButton sender, GUIButtonEventArgs mea)
         {
             _guiFuseeLink.ButtonColor = new float4(0, 0, 0, 0);

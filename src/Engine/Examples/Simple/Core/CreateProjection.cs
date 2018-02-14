@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using Fusee.Engine.Core;
 using Fusee.Math.Core;
-using Fusee.Serialization;
+
 
 namespace Fusee.Engine.Examples.Simple.Core
 {
@@ -17,20 +16,20 @@ namespace Fusee.Engine.Examples.Simple.Core
 
 
         // Use this for initialization
-        public static float4x4 CreateProjectionMat(Dictionary<string,string> parsedFile, float near, float far)
+        public static float4x4 CreateProjectionMat(Dictionary<string, string> parsedFile, float near, float far)
         {
-             var intrinsic = new float3x3();
-            var focalLength = -1 * float.Parse(parsedFile["c"], CultureInfo.InvariantCulture) ;
+            var intrinsic = new float3x3();
+            var focalLength = -1 * float.Parse(parsedFile["c"], CultureInfo.InvariantCulture);
             intrinsic.M11 = focalLength;
             intrinsic.M22 = focalLength;
 
-            intrinsic.M13 = float.Parse(parsedFile["xh"], CultureInfo.InvariantCulture) ;
-            intrinsic.M23 = float.Parse(parsedFile["yh"], CultureInfo.InvariantCulture) ;
+            intrinsic.M13 = float.Parse(parsedFile["xh"], CultureInfo.InvariantCulture);
+            intrinsic.M23 = float.Parse(parsedFile["yh"], CultureInfo.InvariantCulture);
             intrinsic.M33 = 1;
 
             var projection = new float4x4();
-            var a = near + far;
-            var b = near * far;
+            var a = near + far / (far - near);
+            var b = a * near;
 
             projection.M11 = intrinsic.M11;
             projection.M12 = intrinsic.M12;
@@ -45,7 +44,32 @@ namespace Fusee.Engine.Examples.Simple.Core
 
             projection.M43 = 1;
 
-            return projection;
+            var pixelSize = float.Parse(parsedFile["PIXELSIZE"], CultureInfo.InvariantCulture);
+            var width = float.Parse(parsedFile["SENSOR_WIDTH_PIX"], CultureInfo.InvariantCulture) * pixelSize;
+            var height = float.Parse(parsedFile["SENSOR_HEIGHT_PIX"], CultureInfo.InvariantCulture) * pixelSize;
+            var ortho = float4x4.CreateOrthographic(width, height, near, far);
+
+            var res = ortho * projection;
+
+            return res;
+        }
+
+        public static float4x4 CreateOrtho(float width, float height, float near, float far)
+        {
+            var ortho = float4x4.Identity;
+            var left = -width / 2;
+            var right = width / 2;
+            var bottom = -height / 2;
+            var top = height / 2;
+
+            ortho.M11 = -2 / (left - right);
+            ortho.M22 = 2 / (top - bottom);
+            ortho.M33 = -2 / (far - near);
+            ortho.M14 = (right + left) / (right - left);
+            ortho.M24 = (top - bottom) / (top - bottom);
+            ortho.M34 = (far + near) / (far - near);
+
+            return ortho;
         }
 
         public static float4x4 CreateViewMat(Dictionary<string, string> parsedFile)
@@ -54,7 +78,7 @@ namespace Fusee.Engine.Examples.Simple.Core
             var y = float.Parse(parsedFile["B_dz"], CultureInfo.InvariantCulture) * 1000;
             var z = float.Parse(parsedFile["B_dy"], CultureInfo.InvariantCulture) * 1000;
             var translVec = new float3(x, y, z);
-           
+
             var extrinsicRotX = float3x3.Identity.CreateRotationX(float.Parse(parsedFile["B_rotx"], CultureInfo.InvariantCulture));
             var extrinsicRotY = float3x3.Identity.CreateRotationY(float.Parse(parsedFile["B_rotz"], CultureInfo.InvariantCulture));
             var extrinsicRotZ = float3x3.Identity.CreateRotationZ(float.Parse(parsedFile["B_roty"], CultureInfo.InvariantCulture));
@@ -109,12 +133,12 @@ namespace Fusee.Engine.Examples.Simple.Core
 
         public static Dictionary<string, string> Read(string config)
         {
-            Dictionary<string, string> _s = new Dictionary<string, string>();
-            string[] lines = config.Split(new string[] { LineSeparator }, StringSplitOptions.RemoveEmptyEntries);
+            var _s = new Dictionary<string, string>();
+            var lines = config.Split(new string[] { LineSeparator }, StringSplitOptions.RemoveEmptyEntries);
 
             foreach (var l in lines)
             {
-                string t = l.Trim();
+                var t = l.Trim();
                 if (t[0] == '#')
                 {
                     // Es wurde ein Kommentar gefunden ('#' als erstes Zeichen der Zeile).
@@ -131,102 +155,7 @@ namespace Fusee.Engine.Examples.Simple.Core
                     }
                 }
             }
-
             return _s;
-        }
-
-        public static SceneContainer CreateScene(RenderContext rc)
-        {
-            return new SceneContainer
-            {
-                Children = new List<SceneNodeContainer>
-                {
-                    new SceneNodeContainer
-                    {
-                        Name = "RootNull_Transform",
-                        Components = new List<SceneComponentContainer>
-                        {
-                            new TransformComponent
-                            {
-                                Scale = new float3(1,1,1),
-                                Translation = new float3(-48.55724f,2964.6f,3000f)
-                            }
-                        },
-                        Children = new List<SceneNodeContainer>
-                        {
-
-                            new SceneNodeContainer
-                            {
-                                Name = "Cube",
-                                Components = new List<SceneComponentContainer>
-                                {
-                                    new TransformComponent
-                                    {
-                                        Scale = new float3(1,1,1),
-                                        Translation = new float3(0,0,0),
-                                        Rotation = new float3(0,0,0)
-
-                                    },
-
-                                    new MaterialComponent
-                                    {
-                                        Diffuse = new MatChannelContainer
-                                        {
-                                            Color = new float3(1,0.9f,0.4f),
-                                            Texture = "grid.jpg",
-                                            Mix = 0.1f
-                                        },
-                                        Specular =  new SpecularChannelContainer
-                                        {
-                                            Color = new float3(1,1,1),
-                                            Intensity = 0.5f,
-                                            Shininess = 100f
-                                        }
-                                    },
-
-                                    Cube.CreateCube()
-
-                                },
-                                Children = new List<SceneNodeContainer>()
-                                {
-                                    new SceneNodeContainer
-                                    {
-                                        Name = "Sphere",
-                                        Components = new List<SceneComponentContainer>
-                                        {
-                                            new TransformComponent
-                                            {
-                                                Scale = new float3(0.5f,0.5f,0.5f),
-                                                Translation = new float3(0,0,0)
-                                            },
-
-                                            new MaterialComponent
-                                            {
-                                                Diffuse = new MatChannelContainer
-                                                {
-                                                    Color = new float3(0.1f,0.8f,0.4f),
-                                                    Texture = "grid.jpg",
-                                                    Mix = 0.1f
-
-                                                },
-                                                Specular =  new SpecularChannelContainer
-                                                {
-                                                    Color = new float3(1,1,1),
-                                                    Intensity = 0.5f,
-                                                    Shininess = 100f
-                                                }
-                                            },
-                                            Icosphere.CreateIcosphere(6)
-
-                                        }
-                                    },
-                                }
-                            }
-                        }
-
-                    }
-                }
-            };
         }
     }
 }
